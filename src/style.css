@@ -1,0 +1,8 @@
+.center{
+    text-align: center;
+}
+#projects{
+    display: flex;
+    justify-content: flex-end;
+}
+
