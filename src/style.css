@@ -1,8 +1,11 @@
 .center{
     text-align: center;
 }
-#projects{
+.end{
     display: flex;
     justify-content: flex-end;
 }
 
+.current-project{
+    background-color: green;
+}
