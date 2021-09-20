@@ -27,7 +27,6 @@ class Project{
 
 
     document.body.appendChild(component(`<button id='${this.name}' class='project-buttons'>${this.name}</button>`))
-    //document.body.appendChild(component(`<p>${this.name}</p>`))
 
 }
 
@@ -39,17 +38,50 @@ removeProject(){
 
 
  selectProject(){
+
     let projectButton = document.getElementById(`${this.name}`)
 
-    projectButton.addEventListener("click", () =>  projectButton.classList.toggle("current-project"))
+    projectButton.addEventListener("click", () =>  {
+        
+        removeClassList()
+
+        projectButton.classList.toggle("current-project")
+
+
+
+})
 
 }
 
 
 
 }
+
+function removeClassList(){
+    let projectclassList = document.querySelectorAll(".current-project")
+
+    projectclassList.forEach((element) => element.classList.remove("current-project"))
+
+}
+
+function queryClassList(){
+    let classList = document.querySelector(".current-project")
+    return classList == null
+
+}
+function getClassList(){
+    let classList = document.querySelector(".current-project")
+    return classList.innerText
+
+
+
+}
+
 
 let newProject = new Project("Default")
+newProject.addProject()
+allProjects.push(newProject)
+console.log(allProjects.length)
 
 renderHomepage()
 
@@ -84,6 +116,7 @@ function createNewProject(){
             newProject.addProject()
             newProject.selectProject()
 
+
                                     
         })
 
@@ -110,8 +143,21 @@ function createNewTodo(){
         let priority = document.getElementById("priority").value
 
         let newTodoList = createToDoList (title, description, dueDate, priority)
-        
-        allProjects.array.push(newTodoList)
+
+        if (queryClassList() === false){
+            let currentProject = getClassList()
+            allProjects.forEach(element => {
+                if (element.name === currentProject){
+                    element.array.push(newTodoList)
+                    console.log(allProjects)
+                }
+
+            })
+            
+
+        }
+
+
         
     })
 
