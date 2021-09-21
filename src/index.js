@@ -1,5 +1,6 @@
 import component from "./createElement.js"
-import renderHomepage from "./renderHomepage.js"
+import {createTodoForm, renderHomepage} from "./renderHomepage.js"
+import { removeClassList, queryClassList, getClassList} from "./classLists.js";
 
 import './style.css';
 
@@ -8,19 +9,31 @@ let allProjects = []
 
 
 
-let createToDoList = (title, description, dueDate, priority) => {
+let createToDoList = (title, description, dueDate, priority, index) => {
     
-    return {title, description, dueDate, priority }
+    const renderTodo = () => document.body.appendChild(component(`<p>Title: ${title}  Due: ${dueDate}</p>
+        <button id='${index}'>View More Details</button>`))
 
+    const viewAllDetails = () => {
+        let detailsButton = document.getElementById(index)
+        detailsButton.addEventListener("click", (e) => {
+
+        })
+    }
+    
+    return {title, description, dueDate, priority, index, renderTodo, viewAllDetails}
 
 }
 
-
-
 class Project{
     constructor(name){
-        this.name = name
+
+        this.name = name     
+
         this.array = []
+        
+
+
  }
 
   addProject(){
@@ -29,6 +42,7 @@ class Project{
     document.body.appendChild(component(`<button id='${this.name}' class='project-buttons'>${this.name}</button>`))
 
 }
+
 
 removeProject(){
     let removeProject = document.getElementById(`${this.name}`)
@@ -57,31 +71,12 @@ removeProject(){
 
 }
 
-function removeClassList(){
-    let projectclassList = document.querySelectorAll(".current-project")
 
-    projectclassList.forEach((element) => element.classList.remove("current-project"))
+let defaultProject = new Project("Default")
+defaultProject.addProject()
 
-}
+allProjects.push(defaultProject)
 
-function queryClassList(){
-    let classList = document.querySelector(".current-project")
-    return classList == null
-
-}
-function getClassList(){
-    let classList = document.querySelector(".current-project")
-    return classList.innerText
-
-
-
-}
-
-
-let newProject = new Project("Default")
-newProject.addProject()
-allProjects.push(newProject)
-console.log(allProjects.length)
 
 renderHomepage()
 
@@ -128,11 +123,8 @@ function createNewProject(){
 createNewProject()
 
 function createNewTodo(){
-    document.body.appendChild(component("<label>Title<input id='title' placeholder='s'></input></label>"))
-    document.body.appendChild(component("<label>Description<input id='description'></input></label>"))
-    document.body.appendChild(component("<label>dueDate<input id='dueDate'></input></label>"))
-    document.body.appendChild(component("<label>Priority<input id='priority'></input></label>"))
-    document.body.appendChild(component("<button id='submit-todo'>Submit</button>"))
+
+    createTodoForm()
 
     let todoSubmit = document.getElementById("submit-todo")
 
@@ -142,18 +134,32 @@ function createNewTodo(){
         let dueDate = document.getElementById("dueDate").value
         let priority = document.getElementById("priority").value
 
-        let newTodoList = createToDoList (title, description, dueDate, priority)
 
         if (queryClassList() === false){
             let currentProject = getClassList()
-            allProjects.forEach(element => {
-                if (element.name === currentProject){
-                    element.array.push(newTodoList)
-                    console.log(allProjects)
-                }
 
+            allProjects.forEach((element, index) => {
+                if (element.name === currentProject) {
+
+                    let buttonIndex = element.array.length +1
+
+                    let newTodoList = createToDoList (title, description, dueDate, priority, buttonIndex)
+
+                    element.array.push(newTodoList);
+                }
+                
             })
-            
+        }
+        else{
+            let buttonIndex = allProjects[0].array.length +1
+
+            let newTodoList = createToDoList (title, description, dueDate, priority, buttonIndex)
+
+            allProjects[0].array.push(newTodoList)
+            newTodoList.renderTodo()
+            newTodoList.viewAllDetails()
+
+
 
         }
 

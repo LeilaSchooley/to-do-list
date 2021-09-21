@@ -14,4 +14,23 @@ function renderHomepage(){
 
 }
 
-export default renderHomepage
+function createTodoForm(){
+    if (document.getElementById("title") != null){
+
+    }
+    else{
+        document.body.appendChild(component("<label>Title<input id='title'></input></label>"))
+        document.body.appendChild(component("<label>Description<input id='description'></input></label>"))
+        document.body.appendChild(component("<label>dueDate<input id='dueDate'></input></label>"))
+        document.body.appendChild(component("<label>Priority<input id='priority'></input></label>"))
+        document.body.appendChild(component("<button id='submit-todo'>Submit</button>"))
+    
+    }
+
+
+
+
+
+}
+
+export {renderHomepage, createTodoForm}
