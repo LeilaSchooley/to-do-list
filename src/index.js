@@ -14,10 +14,50 @@ let createToDoList = (title, description, dueDate, priority, index) => {
     const renderTodo = () => document.body.appendChild(component(`<p>Title: ${title}  Due: ${dueDate}</p>
         <button id='${index}'>View More Details</button>`))
 
+
+        function showDetailsForm(){
+  
+            let container = document.createElement("div")
+          
+            container.appendChild(component(`<label>Title<input id='edit-title' value='${title}'></input></label>`))
+            container.appendChild(component(`<label>Description<input id='edit-description' value='${description}'></input></label>`))
+            container.appendChild(component(`<label>dueDate<input id='edit-dueDate' value='${dueDate}'></input></label>`))
+            container.appendChild(component(`<label>Priority<input id='edit-priority' value='${priority}'></input></label>`))
+            container.appendChild(component(`<button id='edit-submit-todo'>Submit</button>`))
+
+
+
+
+            document.body.appendChild(container)
+            editSubmitTodo()
+        }
+
+        let editSubmitTodo = () => {
+            
+            let editSubmitButton = document.getElementById("edit-submit-todo")
+            editSubmitButton.addEventListener("click", () => {
+
+                let edit_title = document.getElementById("edit-title").value
+                let edit_description = document.getElementById("edit-description").value
+                let edit_dueDate = document.getElementById("edit-dueDate").value
+                let edit_priority = document.getElementById("edit-priority").value
+
+
+                title = edit_title
+                description = edit_description
+                dueDate = edit_dueDate
+                priority  = edit_priority
+
+                console.log(title, description, dueDate, priority)
+            })
+    
+    }
+
+
     const viewAllDetails = () => {
         let detailsButton = document.getElementById(index)
-        detailsButton.addEventListener("click", (e) => {
-
+        detailsButton.addEventListener("click", () => {
+            showDetailsForm()
         })
     }
     
@@ -122,6 +162,21 @@ function createNewProject(){
 
 createNewProject()
 
+let getTodoFormValues = () => {
+    let title = document.getElementById("title").value
+    let description = document.getElementById("description").value
+    let dueDate = document.getElementById("dueDate").value
+    let priority = document.getElementById("priority").value
+
+}
+let TodoFormValues = () => {
+    let title = document.getElementById("title").value
+    let description = document.getElementById("description").value
+    let dueDate = document.getElementById("dueDate").value
+    let priority = document.getElementById("priority").value
+
+}
+
 function createNewTodo(){
 
     createTodoForm()
@@ -129,12 +184,12 @@ function createNewTodo(){
     let todoSubmit = document.getElementById("submit-todo")
 
     todoSubmit.addEventListener("click",() => {
+
         let title = document.getElementById("title").value
         let description = document.getElementById("description").value
         let dueDate = document.getElementById("dueDate").value
         let priority = document.getElementById("priority").value
-
-
+    
         if (queryClassList() === false){
             let currentProject = getClassList()
 
