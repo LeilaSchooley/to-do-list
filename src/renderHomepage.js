@@ -26,11 +26,26 @@ function createTodoForm(){
         document.body.appendChild(component("<button id='submit-todo'>Submit</button>"))
     
     }
-
-
-
-
-
 }
 
-export {renderHomepage, createTodoForm}
+function showDetailsForm(toDoList){
+  
+        let container = document.createElement("div")
+      
+        container.appendChild(component(`<label>Title<input id='edit-title' value='${toDoList.title}'></input></label>`))
+        container.appendChild(component(`<label>Description<input id='edit-description' value='${toDoList.description}'></input></label>`))
+        container.appendChild(component(`<label>dueDate<input id='edit-dueDate' value='${toDoList.dueDate}'></input></label>`))
+        container.appendChild(component(`<label>Priority<input id='edit-priority' value='${toDoList.priority}'></input></label>`))
+        container.appendChild(component(`<button id='edit-submit-todo'>Submit</button>`))
+    
+        //document.body.appendChild(container)
+    }
+    
+
+
+
+
+export {renderHomepage, 
+    createTodoForm, 
+    showDetailsForm
+}
