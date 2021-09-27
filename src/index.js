@@ -1,78 +1,106 @@
+const randomID = require('@justinaz90/random-id-generator');
+
 import component from "./createElement.js"
-import {createTodoForm, renderHomepage} from "./renderHomepage.js"
-import { removeClassList, queryClassList, getClassList} from "./classLists.js";
-import createToDoList from "./createNewTodo.js";
+import {createTodoForm, renderHomepage, showDetailsForm} from "./render.js"
+import {checkActiveProject, getProjectName, removeTodoContainer, removeClassList} from "./queryElements.js";
+import {createToDoList, renderTodo} from "./createNewTodo.js";
+import {addProject, createProjectButton} from "./Project.js"
 import './style.css';
 
-let allProjects = []
-
-function Project(name){
-    let array = []
-
-    let addProject = () => document.body.appendChild(component(`<button id='${name}' class='project-buttons'>${name}</button>`))
-
-    function removeProject(){
-        let removeProject = document.getElementById(`${name}`)
-        document.body.removeChild(removeProject)
-    }
     
-    function selectProject(){
-        let projectButton = document.getElementById(`${name}`)
-        projectButton.addEventListener("click", () =>  {
-            removeClassList()
-            projectButton.classList.toggle("current-project")
-    
-    })
-    
-    }
-
-    return {name, array, addProject, removeProject, selectProject}
- }
+let allProjects = {}
 
 
-let defaultProject = new Project("Default")
-defaultProject.addProject()
+allProjects[`Default Project`] = []
 
-allProjects.push(defaultProject)
+
 renderHomepage()
 
+createProjectButton("Default Project") 
 
-function renderAll(){
+document.body.appendChild(component(`<button id='all-projects'>All Projects</button>`))
+
+function showAllProjects(){
+    let allProjectsButton = document.getElementById("all-projects")
+    allProjectsButton.addEventListener("click", () => renderAll())
+
+
+}
+
+
+let selectProject = function(){
+    let projectButtons = document.querySelectorAll(`.project-buttons`)
+    projectButtons.forEach(element => element.addEventListener("click", () => {
+
+        removeClassList()
+        element.classList.toggle("current-project")
+        getProjectTodos()
+
+    }))
+     
+}
+
+function getProjectTodos(){
     
+    removeTodoContainer()
+    let activeProject = getProjectName()
 
-    if (checkForContainer() == null){
+    if (activeProject === "All Projects") renderAll()
 
-        let toDoContainer = document.createElement("div")
-        toDoContainer.id="todo-container"
-    
-        allProjects.forEach(element => {
-            for (let i=0; i < element.array.length; i++){
-                let toDoList = element.array[i]
-                renderTodo(toDoList)
-
-            }
-
-        })
-        viewAllDetails()
-        }
-        
     else{
-
-        let allTodoContainers = document.querySelectorAll(".todo-container")
-        allTodoContainers.forEach(element => document.body.removeChild(element))
-
-        let toDoContainer = document.createElement("div")
-        toDoContainer.className="todo-container"
+        allProjects[activeProject].forEach(element => {
+            let newObj = element;
+            renderTodo(newObj)
     
-        allProjects.forEach(element => {
-            for (let i=0; i < element.array.length; i++){
-                let toDoList = element.array[i]
-                renderTodo(toDoList)
-            }
-
         })
+
     }
 
+    viewAllDetails()
+    deleteTodo()
+    
+
+
+}
+function deleteTodo(){
+    let alldeleteButtons = document.querySelectorAll('.delete-button')
+    alldeleteButtons.forEach(element => element.addEventListener("click", () => {
+
+        let activeProject = getProjectName()
+        
+            allProjects[activeProject].forEach((obj, index) => {
+                if (obj.id == element.id) {
+                    allProjects[activeProject].splice(index, 1)
+                    console.log(allProjects[activeProject])
+                    getProjectTodos()
+                }
+
+            })
+           
+
+    }))
+
+
+}
+function renderAll(){
+    removeTodoContainer()
+
+    let toDoContainer = document.createElement("div")
+    toDoContainer.className="todo-container"
+
+
+    for (let key in allProjects){
+        allProjects[key].forEach(element => {
+            let newObj = element;
+            renderTodo(newObj)
+
+        })
+
+    }
+    
+    viewAllDetails()
+    deleteTodo()
+    
 
 }
 function createNewTodo(){
@@ -81,37 +109,34 @@ function createNewTodo(){
 
     let todoSubmit = document.getElementById("submit-todo")
 
-    todoSubmit.addEventListener("click",() => {
+    todoSubmit.addEventListener("click",(e) => {
+        e.preventDefault();
 
         let title = document.getElementById("title").value
         let description = document.getElementById("description").value
         let dueDate = document.getElementById("dueDate").value
         let priority = document.getElementById("priority").value
-    
-        if (queryClassList() === false){
-            let currentProject = getClassList()
 
-            allProjects.forEach((element, index) => {
-                if (element.name === currentProject) {
+        let id = randomID(10);
 
-                    let buttonIndex = element.array.length
+        let newTodoList = createToDoList (title, description, dueDate, priority, id)
 
-                    let newTodoList = createToDoList (title, description, dueDate, priority, buttonIndex)
+        if (checkActiveProject() === false){
+            let currentProject = getProjectName()
 
-                    element.array.push(newTodoList);
-                }
-                
-            })
-        }
+             allProjects[`${currentProject}`].push(newTodoList)
+
+             
+             getProjectTodos()
+
+            }
+        
         else{
             
-            let buttonIndex = allProjects[0].array.length
+            allProjects["Default Project"].push(newTodoList)
 
             
-            let newTodoList = createToDoList (title, description, dueDate, priority, buttonIndex)
-            allProjects[0].array.push(newTodoList)
-
-            renderAll()
+            getProjectTodos()
 
         }
 
@@ -121,13 +146,6 @@ function createNewTodo(){
 
 
 }
-
-
-
-
-
-let checkForContainer = () => document.querySelector(".todo-container")
-
 
 
 let editSubmitTodo = (toDoList) => {
@@ -146,6 +164,8 @@ let editSubmitTodo = (toDoList) => {
         toDoList.dueDate = edit_dueDate
         toDoList.priority  = edit_priority
 
+        getProjectTodos()
+
 
     })
 
@@ -154,24 +174,23 @@ let editSubmitTodo = (toDoList) => {
 
 let viewAllDetails = () => {
     let alldetailButtons = document.querySelectorAll('.details-button')
-    alldetailButtons.forEach((element) => element.addEventListener("click",() => {
-        console.log(element)
+    alldetailButtons.forEach(element => element.addEventListener("click",() => {
+        
+        for (let key in allProjects){
+            allProjects[key].forEach(obj => {
+                if (obj.id == element.id) {
+                    
+                    showDetailsForm(obj)
+                    editSubmitTodo(obj)
+                }
+
+            })
+
+        }    
+    
     }))
 }
 
-let renderTodo = (toDoList) => {
-
-    let toDoContainer = document.createElement("div")
-    toDoContainer.className="todo-container"
-
-    let toDoItem = document.createElement("p")
-    toDoItem.textContent=`Title: ${toDoList.title} Due: ${toDoList.dueDate}`
-
-    toDoContainer.appendChild(toDoItem)
-    toDoContainer.appendChild(component(`<button id='${toDoList.index}' class='details-button'>View More Details</button>`))
-    document.body.appendChild(toDoContainer)
-
-}
 
 
 
@@ -197,15 +216,11 @@ function createNewProject(){
         submitProject.addEventListener("click",() => {
 
             let projectName = document.getElementById("project-name").value
-            let newProject = new Project(projectName)
 
-            allProjects.push(newProject)
-
-            newProject.addProject()
-            newProject.selectProject()
-
-
-                                    
+            allProjects[`${projectName}`] = []
+            addProject(projectName)
+            selectProject()
+            getProjectTodos()
         })
 
     }
@@ -214,7 +229,7 @@ function createNewProject(){
 }
 
 createNewProject()
-
-
+selectProject()
+showAllProjects()
 
 

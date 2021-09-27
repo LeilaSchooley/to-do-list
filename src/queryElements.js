@@ -5,12 +5,22 @@ function removeClassList(){
 
 }
 
-function queryClassList(){
+function removeTodoContainer(){
+    if (document.querySelector(".todo-container") != null){
+
+        let allTodoContainers = document.querySelectorAll(".todo-container")
+        allTodoContainers.forEach(element => document.body.removeChild(element))
+
+    
+
+}}
+
+function checkActiveProject(){
     let classList = document.querySelector(".current-project")
     return classList == null
 
 }
-function getClassList(){
+function getProjectName(){
     let classList = document.querySelector(".current-project")
     return classList.innerText
 
@@ -18,8 +28,10 @@ function getClassList(){
 
 }
 
+
 export {
     removeClassList,
-    getClassList,
-    queryClassList
+    checkActiveProject,
+    getProjectName,
+    removeTodoContainer
 }
