@@ -24,3 +24,6 @@ h1, button{
     font-family: 'Courier New', Courier, monospace;
 }
 
+.hide-form{
+    visibility: hidden;
+}

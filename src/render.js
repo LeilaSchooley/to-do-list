@@ -1,5 +1,5 @@
 import component from "./createElement.js"
-
+import { checkForElementID } from "./queryElements.js"
 function renderHomepage(){
 
 
@@ -15,51 +15,55 @@ function renderHomepage(){
 
 }
 
-function createTodoForm(){
-    if (document.getElementById("title") != null){
+let renderTodo = (toDoList) => {
 
-    }
-    else{
-        //document.body.appendChild(component("<label>Title<input id='title'></label>"))
-        //document.body.appendChild(component("<label>Description<input id='description'></label>"))
-        //document.body.appendChild(component("<label>dueDate<input id='dueDate'></label>"))
+    let toDoContainer = document.createElement("div")
+    toDoContainer.className="todo-container"
+    toDoContainer.id=toDoList.id
 
-        document.body.appendChild(component(`
-        <form name="todo-form" id="todo-form">
-        <label>Title<input id='title' required></label>
-        <label>Description<input id='description'></label>
-        <label>dueDate<input id='dueDate'></label>
-        <label>Priority
+    let toDoItem = document.createElement("p")
+    toDoItem.textContent=`Title: ${toDoList.title} Due: ${toDoList.dueDate}`
 
-        <select name="menu1" id="priority">
-        <option>High</option>
-        <option>Medium</option>
-        <option>Low</option>
-        </select>
-        </label>
-        <button id='submit-todo'>Submit</button>
-        </form>`))
+    toDoContainer.appendChild(toDoItem)
+    toDoContainer.appendChild(component(`<button id='${toDoList.id}' class='details-button'>View More Details</button> 
+    <button id='${toDoList.id}' class='delete-button'>Delete Todo</button>`))
 
-            
-    }
+
+    toDoContainer.appendChild(component(`<div id="prompt-form-container" class='edit-todo-${toDoList.id} hide-form'>
+    <form>
+    <label>Title<input id='edit-title' value='${toDoList.title}'></label>
+
+    <label>Description<input id='edit-description' value='${toDoList.description}'>
+    <label>Due Date:<input id='edit-dueDate' value='${toDoList.dueDate}' type='date'></label>
+    <label>Priority<input id='edit-priority' value='${toDoList.priority}'></label>
+    <button id='edit-submit-todo'>Submit</button>
+    </form>
+    </div>`))
+
+    
+
+    document.body.appendChild(toDoContainer)
+
 }
 
+
 function showDetailsForm(toDoList){
+        //let previousToDoContainer = document.querySelector(`div[id="${toDoList.id}"]`)
 
         let container = document.createElement("div")
-        container.className="todo-container"
+        container.id=`edit-todo-${toDoList.id}`
         container.appendChild(component(`<div id="prompt-form-container">
         <form id="prompt-form">
         <label>Title<input id='edit-title' value='${toDoList.title}'></label>
     
         <label>Description<input id='edit-description' value='${toDoList.description}'>
-        <label>dueDate<input id='edit-dueDate' value='${toDoList.dueDate}'></label>
+        <label>Due Date:<input id='edit-dueDate' value='${toDoList.dueDate}' type='date'></label>
         <label>Priority<input id='edit-priority' value='${toDoList.priority}'></label>
         <button id='edit-submit-todo'>Submit</button>
         </form>
         </div>`))
 
-
+        
         document.body.appendChild(container)
     }
     
@@ -68,7 +72,7 @@ function showDetailsForm(toDoList){
 
 
 export {renderHomepage, 
-    createTodoForm, 
     showDetailsForm,
+    renderTodo
     
 }

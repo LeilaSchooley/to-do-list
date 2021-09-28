@@ -6,20 +6,28 @@ let createToDoList = (title, description, dueDate, priority, id) => {
     return {title, description, dueDate, priority, id}
 }
 
-let renderTodo = (toDoList) => {
+function createTodoForm(){
+  
+    
+    document.body.appendChild(component(`
+    <form name="todo-form" id="todo-form">
+    <label>Title<input id='title' required></label>
+    <label>Description<input id='description'></label>
+    <label>Due Date:<input id='dueDate' type='date'></label>
+    <label>Priority
 
-    let toDoContainer = document.createElement("div")
-    toDoContainer.className="todo-container"
-
-    let toDoItem = document.createElement("p")
-    toDoItem.textContent=`Title: ${toDoList.title} Due: ${toDoList.dueDate}`
-
-    toDoContainer.appendChild(toDoItem)
-    toDoContainer.appendChild(component(`<button id='${toDoList.id}' class='details-button'>View More Details</button> 
-    <button id='${toDoList.id}' class='delete-button'>Delete Todo</button>`))
-    document.body.appendChild(toDoContainer)
-
+    <select name="menu1" id="priority">
+    <option>High</option>
+    <option>Medium</option>
+    <option>Low</option>
+    </select>
+    </label>
+    <button id='submit-todo'>Submit</button>
+    </form>`))
 }
 
-export {createToDoList, renderTodo}
+
+
+
+export {createToDoList, createTodoForm}
 
