@@ -5,16 +5,15 @@ html, body{
     height: 100%;
 }
 
-.center{
-    text-align: center;
+.flex-container{
+    display:flex;
+
 }
-.end{
-    display: flex;
-    justify-content: flex-end;
-}
-.projects{
-    display: flex;
-    justify-content: flex-end
+.flex-container #side-panel{
+    background: greenyellow;
+    width: 300px;
+    height: 500px;
+
 
 }
 .current-project{
@@ -27,3 +26,4 @@ h1, button{
 .hide-form{
     visibility: hidden;
 }
+

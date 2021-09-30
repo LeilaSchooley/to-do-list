@@ -1,15 +1,13 @@
 const randomID = require('@justinaz90/random-id-generator');
 
 import component from "./createElement.js"
-import {renderHomepage, showDetailsForm, renderTodo} from "./render.js"
+import {renderHomepage, renderTodo} from "./render.js"
 import {getProjectName, removeTodoContainer, removeClassList, checkForElementID} from "./queryElements.js";
 import {createTodoForm, createToDoList} from "./createNewTodo.js";
 import {addProject, createProjectButton} from "./Project.js"
 import './style.css';
 
-    
-let allProjects = {}
-
+let allProjects ={}
 
 allProjects[`Default Project`] = []
 
@@ -28,7 +26,6 @@ function showAllProjects(){
 }
 
 function showEditForm(toDoList){
-    console.log(toDoList.id)
     let editForm = document.getElementsByClassName(`edit-todo-${toDoList.id}`)[0]
     editForm.classList.toggle("hide-form")
 
@@ -49,6 +46,7 @@ let selectProject = function(){
 function getProjectTodos(){
     
     removeTodoContainer()
+
     let activeProject = getProjectName()
 
     if (activeProject === "All Projects") renderAll()
@@ -65,19 +63,17 @@ function getProjectTodos(){
     viewToDoDetails()
     deleteTodo()
     
-
-
 }
+
 function deleteTodo(){
     let alldeleteButtons = document.querySelectorAll('.delete-button')
     alldeleteButtons.forEach(element => element.addEventListener("click", () => {
 
         let activeProject = getProjectName()
-        
+
             allProjects[activeProject].forEach((obj, index) => {
                 if (obj.id == element.id) {
                     allProjects[activeProject].splice(index, 1)
-                    console.log(allProjects[activeProject])
                     getProjectTodos()
                 }
 
@@ -103,7 +99,6 @@ function renderAll(){
     viewToDoDetails()
     deleteTodo()
     
-
 }
 function createNewTodo(){
     if (checkForElementID("title")) {
@@ -174,8 +169,6 @@ let viewToDoDetails = () => {
                     
                     if (checkForElementID(`edit-todo-${obj.id}`)){
 
-                        //showDetailsForm(obj)
-
                         showEditForm(obj)
                         editSubmitTodo(obj)
 
@@ -199,15 +192,21 @@ createToDoListButtonClick.addEventListener("click",() => createNewTodo())
 
 function createNewProject(){
     
-    if (checkForElementID("new-project")){
         let newProjectsButton = document.getElementById("new-project")
 
 
         newProjectsButton.addEventListener("click", () => {
+
+            if (checkForElementID("project-name")){
+
+            
             document.body.appendChild(component(`<label>Name of Project:<input id='project-name'></input></label>
             <button id='submit-project'>Submit New Project</button>`))
-            submitNewProject()
         
+            submitNewProject()
+
+        }
+
         })
     
         
@@ -217,20 +216,15 @@ function createNewProject(){
             submitProject.addEventListener("click",() => {
     
                 let projectName = document.getElementById("project-name").value
-    
+                let sidePanel = document.getElementById("side-panel")
+
                 allProjects[projectName] = []
-                addProject(projectName)
+                addProject(projectName, sidePanel)
                 selectProject()
                 getProjectTodos()
             })
     
         }
-
-
-
-    }
-    
-
 
 }
 

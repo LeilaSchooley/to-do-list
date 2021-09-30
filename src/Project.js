@@ -1,7 +1,9 @@
 
 import component from "./createElement.js"
 
-let addProject= (name) => document.body.appendChild(component(`<button id='${name}' class='project-buttons' >${name}</button>`))
+
+
+let addProject= (name, panel) => panel.appendChild(component(`<button id='${name}' class='project-buttons' >${name}</button>`))
 let createProjectButton = (name) => {
     
     let button = document.createElement("button")
