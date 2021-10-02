@@ -2,8 +2,13 @@
 import component from "./createElement.js"
 
 
+let addProject= (name) => {
+    let sidePanel = document.getElementById("side-panel")
 
-let addProject= (name, panel) => panel.appendChild(component(`<button id='${name}' class='project-buttons' >${name}</button>`))
+    sidePanel.appendChild(component(`<button id='${name}' class='project-buttons' >${name}</button>`))
+
+}
+
 let createProjectButton = (name) => {
     
     let button = document.createElement("button")
