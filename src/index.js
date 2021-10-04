@@ -3,7 +3,8 @@ const randomID = require('@justinaz90/random-id-generator');
 import component from "./createElement.js"
 import {
     renderHomepage,
-    renderTodo
+    renderTodo,
+    renderAllTodos
 } from "./render.js"
 import {
     getProjectName,
@@ -16,13 +17,21 @@ import {
     createToDoList
 } from "./createNewTodo.js";
 import {
-    addProject,
-    createProjectButton
+    createProjectButton,
+    showAllProjects
 } from "./Project.js"
 import './style.css';
 import {
-    renderAll
-} from "./renderAll";
+    createNewProject
+} from "./createNewProject";
+import {
+    changeModalState,
+    setdisplayBlock
+} from "./changeModalState";
+import {
+    editSubmitTodo,
+    createEditForm
+} from "./editSubmitTodo";
 
 export let allProjects = {}
 
@@ -33,22 +42,13 @@ renderHomepage()
 
 createProjectButton("Default Project")
 
-document.body.appendChild(component(`<button id='all-projects'>All Projects</button>`))
-
-function showAllProjects() {
-    let allProjectsButton = document.getElementById("all-projects")
-    allProjectsButton.addEventListener("click", () => renderAll())
+let sidePanel = document.getElementById("side-panel")
+sidePanel.appendChild(component(`<button id='all-projects' class='panel-button'>All Projects</button>`))
 
 
-}
 
-function showEditForm(toDoList) {
-    let editForm = document.getElementsByClassName(`edit-todo-${toDoList.id}`)[0]
-    editForm.classList.toggle("hide-form")
 
-}
-
-let selectProject = function () {
+export let selectProject = function () {
     let projectButtons = document.querySelectorAll(`.project-buttons`)
     projectButtons.forEach(element => element.addEventListener("click", () => {
 
@@ -60,13 +60,13 @@ let selectProject = function () {
 
 }
 
-function getProjectTodos() {
+export function getProjectTodos() {
 
     removeTodoContainer()
 
     let activeProject = getProjectName()
 
-    if (activeProject === "All Projects") renderAll()
+    if (activeProject === "All Projects") renderAllTodos()
 
     else {
         allProjects[activeProject].forEach(element => {
@@ -102,91 +102,79 @@ export function deleteTodo() {
 
 }
 
+
+
 function createNewTodo() {
     if (checkForElementID("title")) {
 
         createTodoForm()
 
-        let modal = document.getElementById("myModal");
+        setdisplayBlock("todoModal")
+        changeModalState("todoModal")
 
-        // Get the button that opens the modal
-
-        let span = document.getElementsByClassName("close")[0];
-
-        modal.style.display = "block";
-
-        // When the user clicks on <span> (x), close the modal
-        span.onclick = () => {
-            modal.classList.add("hide-form");
-        }
-
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = (event) => {
-            if (event.target == modal) {
-                modal.classList.add("hide-form");
-            }
-        }
 
         let todoSubmit = document.getElementById("submit-todo")
 
         todoSubmit.addEventListener("click", (e) => {
-            e.preventDefault();
 
             let title = document.getElementById("title").value
-            let description = document.getElementById("description").value
-            let dueDate = document.getElementById("dueDate").value
-            let priority = document.getElementById("priority").value
-            let id = randomID(10);
+            if (title != "") {
 
-            let newTodoList = createToDoList(title, description, dueDate, priority, id)
+                let description = document.getElementById("description").value
+                let dueDate = document.getElementById("dueDate").value
+                let priority = document.getElementById("priority").value
+                let notes = document.getElementById("notes").value
 
-            let currentProject = getProjectName()
 
-            allProjects[currentProject].push(newTodoList)
+                let id = randomID(10);
 
-            getProjectTodos()
+                let newTodoList = createToDoList(title, description, dueDate, priority, id, notes)
+
+                let currentProject = getProjectName()
+
+                allProjects[currentProject].push(newTodoList)
+
+                getProjectTodos()
+
+            } else alert("Todo name can't be empty!")
+
+            e.preventDefault();
 
         })
 
 
 
-    } else {
-        let modal = document.getElementById("myModal");
-
-        modal.classList.remove("hide-form")
-
-
     }
 }
 
+function showTodoOptions(toDoList) {
+    let todoButton = document.querySelectorAll(`.details-button-${toDoList.id}`)
+    todoButton.forEach(element => element.classList.toggle("hide-form"))
 
-function editSubmitTodo(toDoList) {
+    showEditForm(toDoList)
+}
 
-    let editSubmitButton = document.getElementById("edit-submit-todo");
-    editSubmitButton.addEventListener("click", (e) => {
+function showEditForm(toDoList) {
+    let todoButtonEdits = document.querySelectorAll(".edit")
+    todoButtonEdits.forEach(element => element.addEventListener("click", () => {
+            document.body.appendChild(createEditForm(toDoList))
+            setdisplayBlock("editForm")
+            changeModalState("editForm")
+            editSubmitTodo(toDoList)
 
-        e.preventDefault();
-        let edit_title = document.getElementById("edit-title").value;
-        let edit_description = document.getElementById("edit-description").value;
-        let edit_dueDate = document.getElementById("edit-dueDate").value;
-        let edit_priority = document.getElementById("edit-priority").value;
-
-
-        toDoList.title = edit_title;
-        toDoList.description = edit_description;
-        toDoList.dueDate = edit_dueDate;
-        toDoList.priority = edit_priority;
-
-        getProjectTodos();
+        }
 
 
-    });
+
+    ))
+
 
 }
 
-
 export let viewToDoDetails = () => {
-    let alldetailButtons = document.querySelectorAll('.details-button')
+
+    let alldetailButtons = document.querySelectorAll('.merge')
+
     alldetailButtons.forEach(element => element.addEventListener("click", () => {
 
         for (let key in allProjects) {
@@ -195,8 +183,7 @@ export let viewToDoDetails = () => {
 
                     if (checkForElementID(`edit-todo-${obj.id}`)) {
 
-                        showEditForm(obj)
-                        editSubmitTodo(obj)
+                        showTodoOptions(obj)
 
                     }
 
@@ -205,6 +192,8 @@ export let viewToDoDetails = () => {
             })
 
         }
+        deleteTodo()
+
 
     }))
 }
@@ -215,42 +204,6 @@ export let viewToDoDetails = () => {
 let createToDoListButtonClick = document.getElementById("new-todo")
 createToDoListButtonClick.addEventListener("click", () => createNewTodo())
 
-
-function createNewProject() {
-
-    let newProjectsButton = document.getElementById("new-project")
-
-
-    newProjectsButton.addEventListener("click", () => {
-
-        if (checkForElementID("project-name")) {
-
-            document.body.appendChild(component(`<label>Name of Project:<input id='project-name'></input></label>
-            <button id='submit-project'>Submit New Project</button>`))
-
-            submitNewProject()
-
-        }
-
-    })
-
-
-    function submitNewProject() {
-        let submitProject = document.getElementById("submit-project")
-
-        submitProject.addEventListener("click", () => {
-
-            let projectName = document.getElementById("project-name").value
-
-            allProjects[projectName] = []
-            addProject(projectName)
-            selectProject()
-            getProjectTodos()
-        })
-
-    }
-
-}
 
 createNewProject()
 selectProject()

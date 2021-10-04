@@ -28,6 +28,7 @@
     "webpack-dev-server": "^4.2.1"
   },
   "dependencies": {
-    "@justinaz90/random-id-generator": "^1.1.0"
+    "@justinaz90/random-id-generator": "^1.1.0",
+    "date-fns": "^2.24.0"
   }
 }

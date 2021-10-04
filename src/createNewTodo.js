@@ -1,13 +1,14 @@
 import component from "./createElement.js"
 
-let createToDoList = (title, description, dueDate, priority, id) => {
+let createToDoList = (title, description, dueDate, priority, id, notes) => {
 
     return {
         title,
         description,
         dueDate,
         priority,
-        id
+        id,
+        notes
     }
 }
 
@@ -16,22 +17,19 @@ function createTodoForm() {
 
     document.body.appendChild(component(`
 
-    <!-- Trigger/Open The Modal -->
+    <div id="todoModal" class="modal side-panel">
     
-    <!-- The Modal -->
-    <div id="myModal" class="modal">
-    
-      <!-- Modal content -->
       <div class="modal-content">
-      <span class="close">&times;</span>
-      <form>
+
+      <span class="todoModal-close">&times;</span>
+      <form name="form">
       <ul class="flex-outer">
 
           <li>
               <label for="title">Title</label>
 
-              <input name="title" id='title' required>
-          </li>
+              <input name="title" id='title'required>
+          </li> 
 
           <li>
 
@@ -52,16 +50,24 @@ function createTodoForm() {
               <label for="priority">Priority</label>
 
               <input id='priority' name="priority" required>
+          </li>          
+          
+          <li>
+
+              <label for="notes">Additional Notes</label>
+
+              <input id='notes' name="notes" required>
           </li>
 
           <button id='submit-todo'>Submit</button>
 
       </ul>
+      
   </form>
+
       </div>
     
     </div> 
-
 
 `))
 

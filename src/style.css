@@ -46,9 +46,15 @@ button {
     font-family: 'Courier New', Courier, monospace;
 }
 
-.hide-form {
-    visibility: hidden;
+.merge {
+    cursor: pointer;
+
 }
+
+.hide-form {
+    display: none;
+}
+
 
 
 /* The Modal (background) */
@@ -85,15 +91,15 @@ button {
 }
 
 /* The Close Button */
-.close {
+span {
     color: #aaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
 }
 
-.close:hover,
-.close:focus {
+span:hover,
+span:focus {
     color: black;
     text-decoration: none;
     cursor: pointer;
