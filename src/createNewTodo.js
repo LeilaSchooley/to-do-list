@@ -1,4 +1,21 @@
 import component from "./createElement.js"
+const randomID = require('@justinaz90/random-id-generator');
+import {
+    getProjectName,
+    checkForElementID
+} from "./queryElements.js";
+
+import {
+    changeModalState,
+    setdisplayBlock
+} from "./changeModalState";
+import {
+    allProjects,
+    getProjectTodos,
+    saveTodoToLocalStorage
+
+} from "./index";
+
 
 let createToDoList = (title, description, dueDate, priority, id, notes) => {
 
@@ -12,6 +29,7 @@ let createToDoList = (title, description, dueDate, priority, id, notes) => {
     }
 }
 
+
 function createTodoForm() {
 
 
@@ -22,20 +40,20 @@ function createTodoForm() {
       <div class="modal-content">
 
       <span class="todoModal-close">&times;</span>
-      <form name="form">
+      <form name="todoform">
       <ul class="flex-outer">
 
           <li>
               <label for="title">Title</label>
 
-              <input name="title" id='title'required>
+              <input name="title" id='title' required>
           </li> 
 
           <li>
 
               <label for="description">Description</label>
 
-              <input id='description' name="description" required>
+              <input id='description' name="description">
           </li>
 
           <li>
@@ -49,7 +67,11 @@ function createTodoForm() {
 
               <label for="priority">Priority</label>
 
-              <input id='priority' name="priority" required>
+                <select name="priority" id="priority" form="todoform">
+                    <option value="Normal">Normal</option>
+                    <option value="High">High</option>
+                </select>
+
           </li>          
           
           <li>
@@ -75,9 +97,61 @@ function createTodoForm() {
 }
 
 
+function createNewTodo() {
+    if (checkForElementID("title")) {
+
+        createTodoForm();
+
+        setdisplayBlock("todoModal");
+        changeModalState("todoModal");
+
+
+        let todoSubmit = document.getElementById("submit-todo");
+
+        todoSubmit.addEventListener("click", (e) => {
+
+            let title = document.getElementById("title").value;
+            if (title != "") {
+
+                let description = document.getElementById("description").value;
+                let dueDate = document.getElementById("dueDate").value;
+                let priority = document.getElementById("priority").value;
+                let notes = document.getElementById("notes").value;
+
+
+                let id = randomID(10);
+
+                if (dueDate == "")
+                    dueDate = "No due date";
+
+                let newTodoList = createToDoList(title, description, dueDate, priority, id, notes);
+
+                let currentProject = getProjectName();
+
+
+                allProjects[currentProject].push(newTodoList);
+                saveTodoToLocalStorage("Default Project", newTodoList)
+
+
+                getProjectTodos();
+
+            } else
+                alert("Todo name can't be empty!");
+
+            e.preventDefault();
+
+        });
+
+
+
+    }
+}
+
+
 
 
 export {
     createToDoList,
-    createTodoForm
+    createTodoForm,
+    createNewTodo
 }

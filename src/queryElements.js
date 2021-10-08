@@ -16,7 +16,13 @@ function removeTodoContainer() {
 function removeClassList() {
     let projectclassList = document.querySelectorAll(".current-project")
 
-    projectclassList.forEach((element) => element.classList.remove("current-project"))
+    projectclassList.forEach(element => element.classList.remove("current-project"))
+
+}
+
+function removeAllProjectButtons() {
+    let allProjectButtons = document.querySelectorAll(".project-buttons")
+    allProjectButtons.forEach(element => element.parentNode.removeChild(element))
 
 }
 
@@ -26,5 +32,6 @@ export {
     checkActiveProject,
     getProjectName,
     removeTodoContainer,
-    checkForElementID
+    checkForElementID,
+    removeAllProjectButtons
 }

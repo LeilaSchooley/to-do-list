@@ -1,14 +1,17 @@
 import component from "./createElement.js";
 import {
-    checkForElementID
+    checkForElementID,
+    getProjectName,
+    removeAllProjectButtons
 } from "./queryElements.js";
 import {
-    addProject
-} from "./Project.js";
+    renderAllTodos
+} from "./render"
 import {
     allProjects,
     selectProject,
-    getProjectTodos
+    getProjectTodos,
+    saveProjectToLocalStorage
 } from "./index";
 import {
     changeModalState,
@@ -44,7 +47,7 @@ function createProjectForm() {
     `));
 }
 
-export function createNewProject() {
+function createNewProject() {
 
     let newProjectsButton = document.getElementById("new-project");
 
@@ -72,8 +75,12 @@ export function createNewProject() {
             e.preventDefault()
             let projectName = document.getElementById("project-name").value;
             if (projectName != "") {
+
                 allProjects[projectName] = [];
-                addProject(projectName);
+
+                saveProjectToLocalStorage(projectName);
+
+                addAllProjects();
                 selectProject();
                 getProjectTodos();
 
@@ -86,5 +93,38 @@ export function createNewProject() {
         });
 
     }
+
+}
+
+function addAllProjects() {
+    let sidePanel = document.getElementById("side-panel")
+
+    let activeProject = getProjectName()
+
+    removeAllProjectButtons()
+
+    for (let key in allProjects) {
+
+        if (key === activeProject) {
+            sidePanel.appendChild(component(`<button id='${key}' class='project-buttons panel-button current-project'>${key}</button>`))
+
+        } else sidePanel.appendChild(component(`<button id='${key}' class='project-buttons panel-button'>${key}</button>`))
+
+
+    }
+}
+
+
+
+function showAllProjects() {
+    let allProjectsButton = document.getElementById("all-projects")
+    allProjectsButton.addEventListener("click", () => renderAllTodos())
+
+
+}
+
+export {
+    showAllProjects,
+    createNewProject
 
 }

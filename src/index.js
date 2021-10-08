@@ -13,17 +13,14 @@ import {
     checkForElementID
 } from "./queryElements.js";
 import {
-    createTodoForm,
-    createToDoList
+    createNewTodo
 } from "./createNewTodo.js";
 import {
-    createProjectButton,
-    showAllProjects
-} from "./Project.js"
-import './style.css';
-import {
+    showAllProjects,
     createNewProject
-} from "./createNewProject";
+} from "./createNewProject.js"
+import './style.css';
+
 import {
     changeModalState,
     setdisplayBlock
@@ -33,34 +30,82 @@ import {
     createEditForm
 } from "./editSubmitTodo";
 
-export let allProjects = {}
+let allProjects = {}
+
+
+function saveProjectToLocalStorage(projectName) {
+    localStorage.setItem(projectName, JSON.stringify([]))
+}
+
+function saveTodoToLocalStorage(projectName, newTodo) {
+    let projectArray = JSON.parse(localStorage.getItem(projectName))
+    projectArray.push(newTodo)
+    localStorage.setItem(projectName, JSON.stringify(projectArray))
+
+}
+
+function renderLocalStorageTodos() {
+    removeTodoContainer();
+
+    Object.keys(localStorage).forEach(function (key) {
+            let newObjArray = JSON.parse(localStorage.getItem(key));
+            newObjArray.forEach(element => renderTodo(element))
+        }
+
+    );
+
+
+
+}
+
+function renderLocalStorageProjectTodos(projectName) {
+    let newObjArray = JSON.parse((localStorage.getItem(projectName)))
+    console.log(newObjArray)
+    newObjArray.forEach(element => console.log(element))
+
+}
+
+function checkForLocalStorage() {
+    if (JSON.parse(localStorage.getItem(""))) {
+
+        allProjects = localStorage.getItem("allProjects")
+
+    } else {
+
+        allProjects[`Default Project`] = []
+
+        addAllProjects()
+        selectProject();
+        getProjectTodos();
+
+    }
+
+    return currentArray
+}
+//checkForLocalStorage()
 
 allProjects[`Default Project`] = []
-
+//saveProjectToLocalStorage("Default Project")
 
 renderHomepage()
 
-createProjectButton("Default Project")
-
-let sidePanel = document.getElementById("side-panel")
-sidePanel.appendChild(component(`<button id='all-projects' class='panel-button'>All Projects</button>`))
+//renderLocalStorageTodos()
 
 
+//saveToLocalStorage()
 
-
-export let selectProject = function () {
+function selectProject() {
     let projectButtons = document.querySelectorAll(`.project-buttons`)
     projectButtons.forEach(element => element.addEventListener("click", () => {
 
         removeClassList()
         element.classList.toggle("current-project")
         getProjectTodos()
-
     }))
 
 }
 
-export function getProjectTodos() {
+function getProjectTodos() {
 
     removeTodoContainer()
 
@@ -69,6 +114,8 @@ export function getProjectTodos() {
     if (activeProject === "All Projects") renderAllTodos()
 
     else {
+
+        renderLocalStorageProjectTodos()
         allProjects[activeProject].forEach(element => {
             let newObj = element;
             renderTodo(newObj)
@@ -76,13 +123,13 @@ export function getProjectTodos() {
         })
 
     }
-
+    renderLocalStorageTodos()
     viewToDoDetails()
     deleteTodo()
 
 }
 
-export function deleteTodo() {
+function deleteTodo() {
     let alldeleteButtons = document.querySelectorAll('.delete-button')
     alldeleteButtons.forEach(element => element.addEventListener("click", () => {
 
@@ -91,6 +138,8 @@ export function deleteTodo() {
         allProjects[activeProject].forEach((obj, index) => {
             if (obj.id == element.id) {
                 allProjects[activeProject].splice(index, 1)
+                //saveToLocalStorage()
+
                 getProjectTodos()
             }
 
@@ -104,59 +153,19 @@ export function deleteTodo() {
 
 
 
-function createNewTodo() {
-    if (checkForElementID("title")) {
-
-        createTodoForm()
-
-        setdisplayBlock("todoModal")
-        changeModalState("todoModal")
-
-
-        let todoSubmit = document.getElementById("submit-todo")
-
-        todoSubmit.addEventListener("click", (e) => {
-
-            let title = document.getElementById("title").value
-            if (title != "") {
-
-                let description = document.getElementById("description").value
-                let dueDate = document.getElementById("dueDate").value
-                let priority = document.getElementById("priority").value
-                let notes = document.getElementById("notes").value
-
-
-                let id = randomID(10);
-
-                let newTodoList = createToDoList(title, description, dueDate, priority, id, notes)
-
-                let currentProject = getProjectName()
-
-                allProjects[currentProject].push(newTodoList)
-
-                getProjectTodos()
-
-            } else alert("Todo name can't be empty!")
-
-            e.preventDefault();
-
-        })
-
-
-
-    }
-}
-
 function showTodoOptions(toDoList) {
-    let todoButton = document.querySelectorAll(`.details-button-${toDoList.id}`)
-    todoButton.forEach(element => element.classList.toggle("hide-form"))
+    let editButton = document.getElementsByClassName(`details-button-${toDoList.id}`)[0]
+    let deleteButton = document.getElementsByClassName(`details-button-${toDoList.id}-edit`)[0]
+    editButton.classList.toggle("hide-form")
+    deleteButton.classList.toggle("hide-form")
 
     showEditForm(toDoList)
 }
 
 function showEditForm(toDoList) {
-    let todoButtonEdits = document.querySelectorAll(".edit")
-    todoButtonEdits.forEach(element => element.addEventListener("click", () => {
+    let editTodoButton = document.getElementsByClassName(`details-button-${toDoList.id}-edit`)[0]
+    editTodoButton.addEventListener("click", () => {
+
             document.body.appendChild(createEditForm(toDoList))
             setdisplayBlock("editForm")
             changeModalState("editForm")
@@ -166,28 +175,21 @@ function showEditForm(toDoList) {
 
 
 
-    ))
+    )
 
 
 }
 
-export let viewToDoDetails = () => {
+function viewToDoDetails() {
 
     let alldetailButtons = document.querySelectorAll('.merge')
 
     alldetailButtons.forEach(element => element.addEventListener("click", () => {
 
         for (let key in allProjects) {
+
             allProjects[key].forEach(obj => {
-                if (obj.id == element.id) {
-
-                    if (checkForElementID(`edit-todo-${obj.id}`)) {
-
-                        showTodoOptions(obj)
-
-                    }
-
-                }
+                if (obj.id == element.id && checkForElementID(`edit-todo-${obj.id}`)) showTodoOptions(obj)
 
             })
 
@@ -201,10 +203,20 @@ export let viewToDoDetails = () => {
 
 
 
-let createToDoListButtonClick = document.getElementById("new-todo")
-createToDoListButtonClick.addEventListener("click", () => createNewTodo())
+let newTodoButton = document.getElementById("new-todo")
+newTodoButton.addEventListener("click", () => createNewTodo())
 
 
 createNewProject()
 selectProject()
 showAllProjects()
+
+export {
+    selectProject,
+    getProjectTodos,
+    viewToDoDetails,
+    deleteTodo,
+    saveProjectToLocalStorage,
+    saveTodoToLocalStorage,
+    allProjects
+}
