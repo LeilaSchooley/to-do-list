@@ -2,14 +2,6 @@ import component from "./createElement.js"
 import {
     createEditForm
 } from "./editSubmitTodo"
-import {
-    removeTodoContainer
-} from "./queryElements"
-import {
-    allProjects,
-    viewToDoDetails,
-    deleteTodo
-} from "./index"
 
 
 function renderHomepage() {
@@ -36,22 +28,6 @@ function renderHomepage() {
 
 
 
-function renderAllTodos() {
-    removeTodoContainer();
-
-    for (let key in allProjects) {
-        allProjects[key].forEach(element => {
-            let newObj = element;
-            renderTodo(newObj);
-
-        });
-
-    }
-
-    viewToDoDetails();
-    deleteTodo();
-
-}
 
 let renderTodo = (toDoList) => {
     let flexMainContainer = document.getElementById("main-area")
@@ -74,7 +50,7 @@ let renderTodo = (toDoList) => {
 
     toDoContainer.appendChild(component(`<button id='${toDoList.id}' class='edit details-button-${toDoList.id}-edit hide-form'>Edit</button> 
     
-    <button id='${toDoList.id}' class='details-button-${toDoList.id} delete-button hide-form'>Delete</button>`))
+    <button id='${toDoList.id}' class='details-button-${toDoList.id} delete-button-${toDoList.id} delete hide-form'>Delete</button>`))
 
 
     toDoContainer.appendChild(createEditForm(toDoList))
@@ -88,6 +64,5 @@ let renderTodo = (toDoList) => {
 export {
     renderHomepage,
     renderTodo,
-    renderAllTodos
 
 }

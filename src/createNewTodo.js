@@ -10,7 +10,6 @@ import {
     setdisplayBlock
 } from "./changeModalState";
 import {
-    allProjects,
     getProjectTodos,
     saveTodoToLocalStorage
 
@@ -128,9 +127,7 @@ function createNewTodo() {
 
                 let currentProject = getProjectName();
 
-
-                allProjects[currentProject].push(newTodoList);
-                saveTodoToLocalStorage("Default Project", newTodoList)
+                saveTodoToLocalStorage(currentProject, newTodoList)
 
 
                 getProjectTodos();

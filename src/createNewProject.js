@@ -4,11 +4,8 @@ import {
     getProjectName,
     removeAllProjectButtons
 } from "./queryElements.js";
+
 import {
-    renderAllTodos
-} from "./render"
-import {
-    allProjects,
     selectProject,
     getProjectTodos,
     saveProjectToLocalStorage
@@ -76,8 +73,6 @@ function createNewProject() {
             let projectName = document.getElementById("project-name").value;
             if (projectName != "") {
 
-                allProjects[projectName] = [];
-
                 saveProjectToLocalStorage(projectName);
 
                 addAllProjects();
@@ -103,7 +98,8 @@ function addAllProjects() {
 
     removeAllProjectButtons()
 
-    for (let key in allProjects) {
+
+    Object.keys(localStorage).forEach(key => {
 
         if (key === activeProject) {
             sidePanel.appendChild(component(`<button id='${key}' class='project-buttons panel-button current-project'>${key}</button>`))
@@ -111,9 +107,8 @@ function addAllProjects() {
         } else sidePanel.appendChild(component(`<button id='${key}' class='project-buttons panel-button'>${key}</button>`))
 
 
-    }
+    })
 }
-
 
 
 function showAllProjects() {

@@ -1,10 +1,8 @@
 const randomID = require('@justinaz90/random-id-generator');
 
-import component from "./createElement.js"
 import {
     renderHomepage,
     renderTodo,
-    renderAllTodos
 } from "./render.js"
 import {
     getProjectName,
@@ -30,21 +28,40 @@ import {
     createEditForm
 } from "./editSubmitTodo";
 
-let allProjects = {}
+let checkForLocalStorage = (projectName) => JSON.parse(localStorage.getItem(projectName) == null)
 
 
 function saveProjectToLocalStorage(projectName) {
-    localStorage.setItem(projectName, JSON.stringify([]))
+    if (checkForLocalStorage(projectName) == true) {
+        localStorage.setItem(projectName, JSON.stringify([]))
+
+    }
 }
 
 function saveTodoToLocalStorage(projectName, newTodo) {
+
     let projectArray = JSON.parse(localStorage.getItem(projectName))
     projectArray.push(newTodo)
     localStorage.setItem(projectName, JSON.stringify(projectArray))
 
 }
 
-function renderLocalStorageTodos() {
+function updateProjectArray(projectName, array) {
+
+    localStorage.removeItem(projectName)
+    localStorage.setItem(projectName, JSON.stringify(array))
+
+
+}
+
+function renderProjectLocalStorage(projectName) {
+    let newObjArray = JSON.parse(localStorage.getItem(projectName))
+    newObjArray.forEach(element => renderTodo(element))
+
+}
+
+
+function renderAllTodosLocalStorage() {
     removeTodoContainer();
 
     Object.keys(localStorage).forEach(function (key) {
@@ -54,45 +71,16 @@ function renderLocalStorageTodos() {
 
     );
 
-
-
 }
 
-function renderLocalStorageProjectTodos(projectName) {
-    let newObjArray = JSON.parse((localStorage.getItem(projectName)))
-    console.log(newObjArray)
-    newObjArray.forEach(element => console.log(element))
 
-}
+saveProjectToLocalStorage("Default Project")
 
-function checkForLocalStorage() {
-    if (JSON.parse(localStorage.getItem(""))) {
-
-        allProjects = localStorage.getItem("allProjects")
-
-    } else {
-
-        allProjects[`Default Project`] = []
-
-        addAllProjects()
-        selectProject();
-        getProjectTodos();
-
-    }
-
-    return currentArray
-}
-//checkForLocalStorage()
-
-allProjects[`Default Project`] = []
-//saveProjectToLocalStorage("Default Project")
 
 renderHomepage()
 
-//renderLocalStorageTodos()
-
-
-//saveToLocalStorage()
+renderProjectLocalStorage("Default Project")
+viewToDoDetails()
 
 function selectProject() {
     let projectButtons = document.querySelectorAll(`.project-buttons`)
@@ -111,42 +99,32 @@ function getProjectTodos() {
 
     let activeProject = getProjectName()
 
-    if (activeProject === "All Projects") renderAllTodos()
+    if (activeProject === "All Projects") renderAllTodosLocalStorage()
 
-    else {
+    else renderProjectLocalStorage(activeProject)
 
-        renderLocalStorageProjectTodos()
-        allProjects[activeProject].forEach(element => {
-            let newObj = element;
-            renderTodo(newObj)
-
-        })
-
-    }
-    renderLocalStorageTodos()
     viewToDoDetails()
-    deleteTodo()
 
 }
 
-function deleteTodo() {
-    let alldeleteButtons = document.querySelectorAll('.delete-button')
-    alldeleteButtons.forEach(element => element.addEventListener("click", () => {
+function deleteTodo(deleteButton, toDoList) {
+    deleteButton.addEventListener("click", (e) => {
 
         let activeProject = getProjectName()
 
-        allProjects[activeProject].forEach((obj, index) => {
-            if (obj.id == element.id) {
-                allProjects[activeProject].splice(index, 1)
-                //saveToLocalStorage()
+        let localStorageProject = JSON.parse(localStorage.getItem(activeProject))
+        localStorageProject.forEach((obj, index) => {
 
+            if (obj.id === e.target.id) {
+                localStorageProject.splice(index, 1)
+                updateProjectArray(activeProject, localStorageProject)
                 getProjectTodos()
             }
 
         })
 
 
-    }))
+    })
 
 
 }
@@ -154,16 +132,18 @@ function deleteTodo() {
 
 
 function showTodoOptions(toDoList) {
-    let editButton = document.getElementsByClassName(`details-button-${toDoList.id}`)[0]
-    let deleteButton = document.getElementsByClassName(`details-button-${toDoList.id}-edit`)[0]
+
+    let deleteButton = document.getElementsByClassName(`details-button-${toDoList.id}`)[0]
+    let editButton = document.getElementsByClassName(`details-button-${toDoList.id}-edit`)[0]
     editButton.classList.toggle("hide-form")
     deleteButton.classList.toggle("hide-form")
 
-    showEditForm(toDoList)
+    showEditForm(editButton, toDoList)
+    deleteTodo(deleteButton, toDoList)
+
 }
 
-function showEditForm(toDoList) {
-    let editTodoButton = document.getElementsByClassName(`details-button-${toDoList.id}-edit`)[0]
+function showEditForm(editTodoButton, toDoList) {
     editTodoButton.addEventListener("click", () => {
 
             document.body.appendChild(createEditForm(toDoList))
@@ -186,15 +166,22 @@ function viewToDoDetails() {
 
     alldetailButtons.forEach(element => element.addEventListener("click", () => {
 
-        for (let key in allProjects) {
 
-            allProjects[key].forEach(obj => {
-                if (obj.id == element.id && checkForElementID(`edit-todo-${obj.id}`)) showTodoOptions(obj)
+        Object.keys(localStorage).forEach(function (key) {
+                let newObjArray = JSON.parse(localStorage.getItem(key));
+                newObjArray.forEach(obj => {
 
-            })
+                    if (obj.id === element.id && checkForElementID(`edit-todo-${obj.id}`)) {
+                        showTodoOptions(obj)
 
-        }
-        deleteTodo()
+                    }
+
+                })
+            }
+
+        );
+
+
 
 
     }))
@@ -218,5 +205,4 @@ export {
     deleteTodo,
     saveProjectToLocalStorage,
     saveTodoToLocalStorage,
-    allProjects
 }
