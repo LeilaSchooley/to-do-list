@@ -8,10 +8,10 @@ body {
 
 .flex-container {
     display: flex;
-
 }
 
 .panel-button {
+
     margin-bottom: 15px;
     cursor: pointer;
     font-family: 'Courier New', Courier, monospace;
@@ -22,7 +22,9 @@ body {
 }
 
 
+
 .flex-container #side-panel {
+
     background: rgb(106, 167, 15);
     width: 300px;
     height: 760px;
@@ -38,11 +40,6 @@ body {
 
 }
 
-.delete,
-.edit {
-    background: Transparent;
-    font-size: 20px;
-}
 
 .current-project {
     background-color: green;
@@ -57,8 +54,9 @@ body {
 
 button {
     font-family: 'Courier New', Courier, monospace;
-    font-size: 18px;
+    font-size: 20px;
     cursor: pointer;
+    background: Transparent;
 }
 
 .todoname {
@@ -72,9 +70,6 @@ button {
 .hide-form {
     display: none;
 }
-
-
-
 
 
 

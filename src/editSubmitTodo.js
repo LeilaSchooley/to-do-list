@@ -35,10 +35,21 @@ function createEditForm(toDoList) {
 
     <li>
 
-        <label for="edit-priority">Priority</label>
+    <label for="priority">Priority</label>
 
-        <input id='edit-priority' name="edit-priority" value='${toDoList.priority}' required>
-    </li>
+      <select name="priority" id="priority" form="todoform">
+          <option value="Normal">Normal</option>
+          <option value="High">High</option>
+      </select>
+
+      <li>
+
+      <label for="notes">Additional Notes</label>
+
+        <textarea name="notes" id="notes" required></textarea>
+        
+        </li>
+    </li>          
 
         <button id='edit-submit-todo'>Submit</button>
 
@@ -57,16 +68,22 @@ function editSubmitTodo(toDoList) {
 
         e.preventDefault();
         let edit_title = document.getElementById("edit-title").value;
-        let edit_description = document.getElementById("edit-description").value;
-        let edit_dueDate = document.getElementById("edit-dueDate").value;
-        let edit_priority = document.getElementById("edit-priority").value;
+
+        if (edit_title != "") {
+
+            let edit_description = document.getElementById("edit-description").value;
+            let edit_dueDate = document.getElementById("edit-dueDate").value;
+            let edit_priority = document.getElementById("edit-priority").value;
 
 
-        toDoList.title = edit_title;
-        toDoList.description = edit_description;
-        toDoList.dueDate = edit_dueDate;
-        toDoList.priority = edit_priority;
+            toDoList.title = edit_title;
+            toDoList.description = edit_description;
+            toDoList.dueDate = edit_dueDate;
+            toDoList.priority = edit_priority;
+        } else {
+            alert("Todo name can't be empty!");
 
+        }
         getProjectTodos();
 
 

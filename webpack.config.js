@@ -6,20 +6,14 @@ module.exports = {
   entry: './src/index.js',
   devtool: 'inline-source-map',
 
- devServer: {
+  devServer: {
 
-   static: './dist',
+    static: './dist',
 
- },
-  plugins: [
-    new HtmlWebpackPlugin({
-      title: 'Todo List',
-    }),
-  ],
+  },
   output: {
     filename: '[name].bundle.js',
-    path: path.resolve(__dirname, 'dist'),
-    clean: true,
+    path: path.resolve(__dirname, 'dist')
   },
   module: {
 

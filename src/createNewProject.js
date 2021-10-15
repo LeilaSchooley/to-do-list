@@ -4,11 +4,13 @@ import {
     getProjectName,
     removeAllProjectButtons
 } from "./queryElements.js";
-
+import {
+    renderAllTodosLocalStorage,
+    saveProjectToLocalStorage
+} from "./localStorage"
 import {
     selectProject,
     getProjectTodos,
-    saveProjectToLocalStorage
 } from "./index";
 import {
     changeModalState,
@@ -113,13 +115,14 @@ function addAllProjects() {
 
 function showAllProjects() {
     let allProjectsButton = document.getElementById("all-projects")
-    allProjectsButton.addEventListener("click", () => renderAllTodos())
+    allProjectsButton.addEventListener("click", () => renderAllTodosLocalStorage())
 
 
 }
 
 export {
     showAllProjects,
-    createNewProject
+    createNewProject,
+    addAllProjects
 
 }

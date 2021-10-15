@@ -4,31 +4,6 @@ import {
 } from "./editSubmitTodo"
 
 
-function renderHomepage() {
-
-    document.body.appendChild(component(`<div class='flex-container'>
-    <div id='side-panel'></div>
-
-    <div id='main-area'></div>
-    </div>`))
-
-    let sidePanel = document.getElementById("side-panel")
-
-    sidePanel.appendChild(component("<button id='new-todo' class='panel-button'>Add Task</button>"))
-
-    sidePanel.appendChild(component("<button class='panel-button'>Important Stuff</button>"))
-
-    sidePanel.appendChild(component("<button id='new-project' class='panel-button'>Add Project</button>"))
-
-
-    sidePanel.appendChild(component(`<button id='all-projects' class='panel-button'>All Projects</button>`))
-    sidePanel.appendChild(component(`<button id="Default Project" class="current-project panel-button project-buttons">Default Project</button>`))
-
-}
-
-
-
-
 let renderTodo = (toDoList) => {
     let flexMainContainer = document.getElementById("main-area")
 
@@ -62,7 +37,6 @@ let renderTodo = (toDoList) => {
 
 
 export {
-    renderHomepage,
-    renderTodo,
+    renderTodo
 
 }

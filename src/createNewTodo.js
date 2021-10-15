@@ -4,15 +4,15 @@ import {
     getProjectName,
     checkForElementID
 } from "./queryElements.js";
-
+import {
+    saveTodoToLocalStorage
+} from "./localStorage"
 import {
     changeModalState,
     setdisplayBlock
 } from "./changeModalState";
 import {
-    getProjectTodos,
-    saveTodoToLocalStorage
-
+    getProjectTodos
 } from "./index";
 
 
@@ -77,8 +77,8 @@ function createTodoForm() {
 
               <label for="notes">Additional Notes</label>
 
-              <input id='notes' name="notes" required>
-          </li>
+            <textarea name="notes" id="notes" required></textarea>
+            </li>
 
           <button id='submit-todo'>Submit</button>
 
@@ -120,15 +120,13 @@ function createNewTodo() {
 
                 let id = randomID(10);
 
-                if (dueDate == "")
-                    dueDate = "No due date";
+                if (dueDate == "") dueDate = "No due date";
 
                 let newTodoList = createToDoList(title, description, dueDate, priority, id, notes);
 
                 let currentProject = getProjectName();
 
                 saveTodoToLocalStorage(currentProject, newTodoList)
-
 
                 getProjectTodos();
 
