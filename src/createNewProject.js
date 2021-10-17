@@ -1,24 +1,19 @@
 import component from "./createElement.js";
 import {
-    checkForElementID,
-    getProjectName,
-    removeAllProjectButtons
+  checkForElementID,
+  getProjectName,
+  removeAllProjectButtons,
 } from "./queryElements.js";
 import {
-    renderAllTodosLocalStorage,
-    saveProjectToLocalStorage
-} from "./localStorage"
-import {
-    selectProject,
-    getProjectTodos,
-} from "./index";
-import {
-    changeModalState,
-    setdisplayBlock
-} from "./changeModalState";
+  renderAllTodosLocalStorage,
+  saveProjectToLocalStorage,
+} from "./localStorage";
+import { selectProject, getProjectTodos } from "./index";
+import { changeModalState, setdisplayBlock } from "./changeModalState";
 
 function createProjectForm() {
-    document.body.appendChild(component(`
+  document.body.appendChild(
+    component(`
 
     <div id="projectModal" class="modal side-panel">
 
@@ -43,86 +38,71 @@ function createProjectForm() {
     </div>
 
     </div>
-    `));
+    `)
+  );
 }
 
 function createNewProject() {
+  let newProjectsButton = document.getElementById("new-project");
 
-    let newProjectsButton = document.getElementById("new-project");
+  newProjectsButton.addEventListener("click", () => {
+    if (checkForElementID("project-name")) {
+      createProjectForm();
 
+      setdisplayBlock("projectModal");
+      changeModalState("projectModal");
 
-    newProjectsButton.addEventListener("click", () => {
-
-        if (checkForElementID("project-name")) {
-
-            createProjectForm()
-
-            setdisplayBlock("projectModal")
-            changeModalState("projectModal")
-
-            submitNewProject();
-
-        }
-
-    })
-
-
-    function submitNewProject() {
-        let submitProject = document.getElementById("submit-project");
-
-        submitProject.addEventListener("click", (e) => {
-            e.preventDefault()
-            let projectName = document.getElementById("project-name").value;
-            if (projectName != "") {
-
-                saveProjectToLocalStorage(projectName);
-
-                addAllProjects();
-                selectProject();
-                getProjectTodos();
-
-
-            } else {
-                alert("Project name can't be empty!")
-
-            }
-
-        });
-
+      submitNewProject();
     }
+  });
 
+  function submitNewProject() {
+    let submitProject = document.getElementById("submit-project");
+
+    submitProject.addEventListener("click", (e) => {
+      e.preventDefault();
+      let projectName = document.getElementById("project-name").value;
+      if (projectName != "") {
+        saveProjectToLocalStorage(projectName);
+
+        addAllProjects();
+        selectProject();
+        getProjectTodos();
+      } else {
+        alert("Project name can't be empty!");
+      }
+    });
+  }
 }
 
 function addAllProjects() {
-    let sidePanel = document.getElementById("side-panel")
+  let sidePanel = document.getElementById("side-panel");
 
-    let activeProject = getProjectName()
+  let activeProject = getProjectName();
 
-    removeAllProjectButtons()
+  removeAllProjectButtons();
 
-
-    Object.keys(localStorage).forEach(key => {
-
-        if (key === activeProject) {
-            sidePanel.appendChild(component(`<button id='${key}' class='project-buttons panel-button current-project'>${key}</button>`))
-
-        } else sidePanel.appendChild(component(`<button id='${key}' class='project-buttons panel-button'>${key}</button>`))
-
-
-    })
+  Object.keys(localStorage).forEach((key) => {
+    if (key === activeProject) {
+      sidePanel.appendChild(
+        component(
+          `<button id='${key}' class='project-buttons panel-button current-project'>${key}</button>`
+        )
+      );
+    } else
+      sidePanel.appendChild(
+        component(
+          `<button id='${key}' class='project-buttons panel-button'>${key}</button>`
+        )
+      );
+  });
 }
-
 
 function showAllProjects() {
-    let allProjectsButton = document.getElementById("all-projects")
-    allProjectsButton.addEventListener("click", () => renderAllTodosLocalStorage())
-
-
+  let allProjectsButton = document.getElementById("all-projects");
+  allProjectsButton.addEventListener("click", () =>
+    renderAllTodosLocalStorage()
+  );
 }
 
-export {
-    showAllProjects,
-    createNewProject,
-    addAllProjects
-
-}
+export { showAllProjects, createNewProject, addAllProjects };

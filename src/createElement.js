@@ -1,10 +1,9 @@
 function component(html) {
-    const element = document.createElement('div');
-  
-    // use your function!
-    element.innerHTML = html
-    return element;
-  }
-  
+  const element = document.createElement("div");
 
-  export default component
+  // use your function!
+  element.innerHTML = html;
+  return element;
+}
+
+export default component;

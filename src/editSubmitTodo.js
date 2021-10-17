@@ -1,11 +1,8 @@
-import {
-    getProjectTodos
-} from "./index";
-import component from "./createElement.js"
+import { getProjectTodos } from "./index";
+import component from "./createElement.js";
 
 function createEditForm(toDoList) {
-
-    return component(`
+  return component(`
   <div id="editForm" class="modal">
   <div class="modal-content">
   <span class="editForm-close">&times;</span>
@@ -58,41 +55,29 @@ function createEditForm(toDoList) {
     </div>
 
     </div>
-    `)
+    `);
 }
 
 function editSubmitTodo(toDoList) {
+  let editSubmitButton = document.getElementById("edit-submit-todo");
+  editSubmitButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    let edit_title = document.getElementById("edit-title").value;
 
-    let editSubmitButton = document.getElementById("edit-submit-todo");
-    editSubmitButton.addEventListener("click", (e) => {
+    if (edit_title != "") {
+      let edit_description = document.getElementById("edit-description").value;
+      let edit_dueDate = document.getElementById("edit-dueDate").value;
+      let edit_priority = document.getElementById("edit-priority").value;
 
-        e.preventDefault();
-        let edit_title = document.getElementById("edit-title").value;
-
-        if (edit_title != "") {
-
-            let edit_description = document.getElementById("edit-description").value;
-            let edit_dueDate = document.getElementById("edit-dueDate").value;
-            let edit_priority = document.getElementById("edit-priority").value;
-
-
-            toDoList.title = edit_title;
-            toDoList.description = edit_description;
-            toDoList.dueDate = edit_dueDate;
-            toDoList.priority = edit_priority;
-        } else {
-            alert("Todo name can't be empty!");
-
-        }
-        getProjectTodos();
-
-
-    });
-
+      toDoList.title = edit_title;
+      toDoList.description = edit_description;
+      toDoList.dueDate = edit_dueDate;
+      toDoList.priority = edit_priority;
+    } else {
+      alert("Todo name can't be empty!");
+    }
+    getProjectTodos();
+  });
 }
 
-export {
-    editSubmitTodo,
-    createEditForm
-
-}
+export { editSubmitTodo, createEditForm };
